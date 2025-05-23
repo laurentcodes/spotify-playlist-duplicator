@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 
 // spotify api
 import {
@@ -124,28 +125,35 @@ function App() {
 
 	const handleLogout = () => {
 		logout();
+
 		setUser(null);
 		setIsAuth(false);
+
 		setPlaylistUrl('');
+
 		setCustomName('');
 		setCustomDescription('');
+
 		setStatus({ type: null, message: '' });
+
+		toast.dismiss('duplicate-playlist');
 	};
 
 	const handleDuplicatePlaylist = async (e: React.FormEvent) => {
 		e.preventDefault();
 
 		if (!playlistUrl.trim()) {
-			setStatus({
-				type: 'error',
-				message: 'Please enter a Spotify playlist URL',
-			});
+			toast.error('Please enter a Spotify playlist URL');
+
 			return;
 		}
 
 		try {
 			setIsLoading(true);
-			setStatus({ type: 'loading', message: 'Duplicating playlist...' });
+
+			toast.loading('Duplicating playlist...', {
+				id: 'duplicate-playlist',
+			});
 
 			const newPlaylist = await duplicatePlaylist(
 				playlistUrl.trim(),
@@ -153,10 +161,12 @@ function App() {
 				customDescription.trim() || undefined
 			);
 
-			setStatus({
-				type: 'success',
-				message: `Successfully created "${newPlaylist.name}"! Check your Spotify library.`,
-			});
+			toast.success(
+				`Successfully created "${newPlaylist.name}"! Check your Spotify library.`,
+				{
+					id: 'duplicate-playlist',
+				}
+			);
 
 			setPlaylistUrl('');
 			setCustomName('');
@@ -164,13 +174,10 @@ function App() {
 
 			setTimeout(() => setStatus({ type: null, message: '' }), 5000);
 		} catch (error: any) {
-			console.error('Failed to duplicate playlist:', error);
-			setStatus({
-				type: 'error',
-				message:
-					error.message ||
-					'Failed to duplicate playlist. Please check the URL and try again.',
-			});
+			toast.error(
+				error.message ||
+					'Failed to duplicate playlist. Please check the URL and try again.'
+			);
 		} finally {
 			setIsLoading(false);
 		}
@@ -205,6 +212,7 @@ function App() {
 								<h1 className='text-xl sm:text-2xl font-bold text-gray-900 leading-tight'>
 									Playlist Duplicator
 								</h1>
+
 								<p className='text-xs sm:text-sm text-gray-500 font-medium'>
 									Powered by Spotify
 								</p>
@@ -378,6 +386,7 @@ function App() {
 									>
 										Custom Playlist Description (Optional)
 									</label>
+
 									<textarea
 										id='custom-description'
 										className='input text-sm sm:text-base resize-none h-24 sm:h-28'
