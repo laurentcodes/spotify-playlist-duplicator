@@ -1,0 +1,11 @@
+# Dependencies
+node_modules
+
+# Vite build outputs
+dist
+dist-ssr
+*.local
+
+# Environment variables
+.env
+.env.*
