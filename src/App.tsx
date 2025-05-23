@@ -176,7 +176,10 @@ function App() {
 		} catch (error: any) {
 			toast.error(
 				error.message ||
-					'Failed to duplicate playlist. Please check the URL and try again.'
+					'Failed to duplicate playlist. Please check the URL and try again.',
+				{
+					id: 'duplicate-playlist',
+				}
 			);
 		} finally {
 			setIsLoading(false);
