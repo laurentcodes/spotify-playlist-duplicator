@@ -8,7 +8,7 @@ import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
-		<Toaster position='top-center' richColors />
+		<Toaster position='top-center' theme='dark' richColors />
 
 		<App />
 	</React.StrictMode>
